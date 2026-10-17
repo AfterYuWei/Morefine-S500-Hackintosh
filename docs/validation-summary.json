@@ -45,5 +45,7 @@
     "SMBIOS_identifiers_redacted": true,
     "raw_private_logs_excluded": true,
     "identity_must_be_generated_before_boot": true
-  }
+  },
+  "record_scope": "Historical Metal / Chrome / VS Code validation before GLDualQuadFix; not a result for the current OpenGL candidate",
+  "opengl_candidate_record": "opengl-validation-summary.json"
 }

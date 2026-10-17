@@ -1,0 +1,1 @@
+PASS: exact page accepted; all 4096 single-byte mutations, wrong file offsets, null and already-patched pages rejected.

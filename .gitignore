@@ -8,6 +8,11 @@ __MACOSX/
 *.ips
 __pycache__/
 *.pyc
+Sources/GLDualQuadFix/build/
+Sources/Dependencies/
+Sources/GLDualQuadFix/*.o
+Sources/GLDualQuadFix/*.bin
+Sources/GLDualQuadFix/candidate-code-audit.json
 config.private.plist
 .env
 .env.*

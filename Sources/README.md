@@ -1,5 +1,7 @@
 # 本地派生源码与维护
 
+`GLDualQuadFix/` 是新增的独立 OpenGL 候选 0.1.1，包含维护源码、生成页面数据的工具、构建脚本和 CPU 检查记录。它与下述 NootedRed Metal 修改分别维护；说明见 [GLDualQuadFix/README.md](GLDualQuadFix/README.md)。
+
 `NootedRed-Init2-Source.zip` 包含本次本地修改的完整源码、固定版本的 Lilu / MacKernelSDK 依赖、源码差异、构建说明与初始化表审计。原作者版权和许可保留于源码树中。
 
 直接上游为 [steve12311/NootedRed](https://github.com/steve12311/NootedRed)，提交 `1983f326ebedda9e5596ee6e8ba47af52420ec11`，基于 [ChefKissInc/NootedRed](https://github.com/ChefKissInc/NootedRed)。

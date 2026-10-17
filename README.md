@@ -1,10 +1,12 @@
 # Morefine S500 Hackintosh
 
-记录 Morefine S500+（Ryzen 7 5825U）上的 OpenCore 配置、AX200 无线适配，以及 NootedRed 在 Tahoe 下的 Chrome / Electron 闪屏、卡顿与 GPU Reset 修复实验。
+记录 Morefine S500+（Ryzen 7 5825U）上的 OpenCore 配置、AX200 无线适配，以及 NootedRed 在 Tahoe 下的 Chrome / Electron 渲染实验和网易云 OpenGL 花屏候选修补。
 
 本仓库基于现有 EFI 和多个社区项目整理，包含本机适配与本地实验修改。主要驱动和补丁的功劳属于各上游作者；参考与致谢见文末。
 
 > **使用前先生成自己的 SMBIOS 信息。** `EFI/OC/config.plist` 与 `已验证EFI.zip` 均已移除本机的序列号、MLB、SystemUUID 和 ROM，不能直接使用这些空值启动。实机验证使用的是脱敏前、具有有效本机身份信息的配置。
+
+> **OpenGL 更新状态：** `EFI/` 新增实验性 `GLDualQuadFix 0.1.1`，面向本机 `1002:15e7`、Darwin `25.6` 的精确 Apple OpenGL 驱动。已通过离线检查并部署到本机 SSD；重启后 `PATCHED`、网易云硬件加速歌单操作及持续稳定性尚未确认。`已验证EFI.zip` 保留此前不含此插件的历史版本。详情见 [OpenGL 候选说明](docs/opengl-candidate.md)。
 
 ## 本机配置与验证范围
 
@@ -22,7 +24,7 @@
 | Tahoe | macOS 26.7.1 / `25G241` / Darwin `25.6.0`，独立测试卷实测 |
 | 图形测试 | DELL U2422HX，1920 × 1080 / 60 Hz |
 
-验证日期：2026-10-17。当前发布来自已经通过测试的 U 盘引导配置，不表示已经替换主系统或写入固态 EFI。
+验证日期：2026-10-17。基础配置及下述 Chrome / VS Code 结果来自此前的引导介质测试。OpenGL 0.1.1 后续已部署到本机 SSD，仓库本次仅同步这一插件、加载条目及维护资料；其余组件保留原仓库版本，不能把历史应用通过结果视为新候选通过。
 
 ## 处理了哪些问题
 
@@ -89,6 +91,16 @@ sudo chmod 644 /Library/Preferences/com.apple.coremedia.plist
 - 分别限定 Sequoia 与 Tahoe 的 NootedRed、无线和蓝牙驱动加载范围，避免跨版本误加载。
 - 使用 OpenCore 1.0.8 的 `ocvalidate`、plist 检查及文件散列核对。
 
+### 6. 网易云歌单触发 OpenGL GPU Reset：候选 0.1.1
+
+点击“我喜欢的歌单”会出现花屏或桌面卡顿，退出网易云可恢复。已有报告显示网易云 GPU Helper 在 Apple OpenGL 提交路径发生 GPU 重置；软件渲染启动后原操作正常。此前的 Metal 修补不能直接覆盖这条 OpenGL 路径。
+
+新增独立 Lilu 插件 `GLDualQuadFix.kext`，仅对本机 PCI `15e7` 的 `UpdateHwCbDualQuadMode` 设置 `DISABLE_DUAL_QUAD`，保留 GPU 加速。候选通过 `cs_validate_page` 在原生验证成功后，核对精确驱动路径、偏移与完整 4KB 原页面，再修改内存中的 142 字节函数。
+
+首版 0.1.0 重启后仍为 `NATIVE`。0.1.1 修正了插件的 IOKit 匹配阶段和页面验证入口，原渲染载荷不变。新入口 32,768 组 CPU / UBSan 检查、编译、静态分析和签名检查通过；原载荷的 786,432 组对照及 4096 字节变异拒绝检查记录随源码提供。**这些检查不等于 GPU 实测，当前尚未证实花屏根因或根治。**
+
+重启后先运行 [检查驱动修补.command](Tools/GLDualQuadFix/检查驱动修补.command)，出现 0.1.1 服务及 `PATCHED` 后，才正常打开网易云测试原歌单。完整限制与回退方法见 [候选说明](docs/opengl-candidate.md)，源码及构建说明见 [Sources/GLDualQuadFix](Sources/GLDualQuadFix)。
+
 ## 主要组件
 
 | 组件 | 当前版本 | 范围 / 用途 |
@@ -98,6 +110,7 @@ sudo chmod 644 /Library/Preferences/com.apple.coremedia.plist
 | RestrictEvents | 1.1.6 | 兼容性处理 |
 | NootedRed | 0.8.10 | Darwin ≤ 24.99.99，Sequoia 原有核显驱动 |
 | NootedRed-Tahoe | 0.9.0，Auth1 + Init2 本地版 | Darwin 25.0.0–25.99.99 |
+| GLDualQuadFix | 0.1.1，本机实验候选 | Darwin 25.6.0–25.6.99；精确 GL 驱动及 PCI 15e7 |
 | AMFIPass | 1.4.1 | 仅 Darwin 25，签名兼容 |
 | AirportItlwm | 2.4.0 预览构建 | Darwin 24.2.0–24.99.99 |
 | IntelBluetoothFirmware / IntelBTPatcher | 2.5.0 | 仅 Darwin 24 |
@@ -122,6 +135,7 @@ sudo chmod 644 /Library/Preferences/com.apple.coremedia.plist
 ## 未解决或未完整验证
 
 - 长时间负载、睡眠唤醒、所有显示接口 / 分辨率及其他 Electron 应用尚未完成验证。
+- OpenGL 0.1.1 尚待重启后确认 `PATCHED`、原生硬件加速的网易云歌单复现和持续播放；历史 Chrome / VS Code 通过不代表此候选已通过。
 - Tahoe 的 AX200 Wi-Fi / 蓝牙没有在本配置中启用。
 - 原接入点的部分 5 GHz 连接高延迟仍需进一步定位。
 - 后续关机阶段存在独立 `shutdownStall` 记录，原因尚未确定，不能声称整机所有稳定性问题已解决。

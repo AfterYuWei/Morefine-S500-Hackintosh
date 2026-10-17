@@ -383,6 +383,24 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>BundlePath</key>
+				<string>GLDualQuadFix.kext</string>
+				<key>Comment</key>
+				<string>Local GL blend candidate 2, IOKit early load and page validation</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/GLDualQuadFix</string>
+				<key>MaxKernel</key>
+				<string>25.6.99</string>
+				<key>MinKernel</key>
+				<string>25.6.0</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
 				<string>RealtekRTL8111.kext</string>
 				<key>Comment</key>
 				<string>RealtekRTL8111.kext 2.4.2</string>

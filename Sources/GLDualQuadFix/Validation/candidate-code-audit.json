@@ -1,0 +1,16 @@
+{
+  "system_driver": "/System/Library/Extensions/AMDRadeonX5000GLDriver.bundle/Contents/MacOS/AMDRadeonX5000GLDriver",
+  "driver_sha256": "ce205f063627a4b82ee8ccee04ab7963a3efb8dec488cb3c53ed6c6719434f80",
+  "function": "_glrAMD_GFX9_UpdateHwCbDualQuadMode",
+  "rva": "0x819e",
+  "size": 142,
+  "original_sha256": "2e6f3173c900c04b4f88bcdab671c64cbb270a8eb2a4f75661acb8467dab6b6a",
+  "replacement_sha256": "669daa1f7b96afc89b12aa977ddc2be31962a3a47bae41dcfaa3be716bd542b4",
+  "page_sha256": "e5165b5b7dd641a1f3d886aec0a87864f9d3763cadd76d5528e572c0f45ed705",
+  "original_call_offset": 83,
+  "replacement_call_offset": 88,
+  "submit_target_rva": "0x5f5ae",
+  "scope": "hardware PCI device 1002:15e7 only; other device IDs retain native expression",
+  "intent": "force CB_COLOR_CONTROL.DISABLE_DUAL_QUAD for this APU, preserve native command emission and flush",
+  "status": "offline candidate, no GPU validation or installation"
+}
