@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-17",
+  "machine": "Morefine S500+, Ryzen 7 5825U, AMD 1002:15e7",
+  "system": "macOS 26.7.1 / 25G241 / Darwin 25.6.0",
+  "driver_UUID": "86E597A9-1A9C-5BE4-AA4F-D11370076911",
+  "driver_SHA256": "332f4723f8b874ecb5a9c51873de023a1657a2f69ade6686a6bc55847c922edc",
+  "boot_argument": "-NRedLegacyBlend",
+  "Chrome": {
+    "version": "155.0.8059.85",
+    "SkiaBackend": "GraphiteDawnMetal",
+    "ANGLE": "ANGLE_METAL",
+    "hardware_accelerated": [
+      "Canvas",
+      "Compositing",
+      "Rasterization",
+      "WebGL",
+      "WebGPU"
+    ],
+    "GPU_process_crash_count": 0,
+    "user_interaction_test": "passed"
+  },
+  "VSCode": {
+    "user_confirmed_operations": "scrolling, window switching and terminal use normal",
+    "dedicated_GPU_status_report_collected": false
+  },
+  "LegacyBlend_applied_before_after": [
+    11,
+    16
+  ],
+  "local_authorization_applied_before_after": [
+    11,
+    32
+  ],
+  "WindowServer_patch_applied": true,
+  "new_GPU_Reset_or_WindowServer_crash_in_test_collection": 0,
+  "SIP_reported": "enabled",
+  "signing_exceptions_retained": true,
+  "test_window_minutes_approximately": 4,
+  "limitations": [
+    "Tahoe-only validation; Sequoia Electron fix not established",
+    "Long-term and sleep/wake unverified",
+    "Separate shutdownStall reports unresolved"
+  ],
+  "public_copy": {
+    "SMBIOS_identifiers_redacted": true,
+    "raw_private_logs_excluded": true,
+    "identity_must_be_generated_before_boot": true
+  }
+}

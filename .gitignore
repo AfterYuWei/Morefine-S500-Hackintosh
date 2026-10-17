@@ -1,0 +1,17 @@
+.DS_Store
+._*
+__MACOSX/
+*.log
+*.panic
+*.gpuRestart
+*.shutdownStall
+*.ips
+__pycache__/
+*.pyc
+config.private.plist
+.env
+.env.*
+*.key
+*.pem
+*credential*
+*token*

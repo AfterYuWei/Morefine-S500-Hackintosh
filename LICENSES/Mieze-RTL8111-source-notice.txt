@@ -1,0 +1,21 @@
+/* RealtekRTL8111.cpp -- RTL8111 driver class implementation.
+ *
+ * Copyright (c) 2013-2025 Laura Müller <laura-mueller@uni-duesseldorf.de>
+ * All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * Driver for Realtek RTL8111x PCIe ethernet controllers.
+ *
+ * This driver is based on Realtek's r8168 Linux driver (8.041.0).
+ */
+
+Source: https://raw.githubusercontent.com/Mieze/RTL8111_driver_for_OS_X/master/RealtekRTL8111/RealtekRTL8111.cpp
