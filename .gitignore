@@ -10,10 +10,10 @@ __pycache__/
 *.pyc
 Sources/GLDualQuadFix/build/
 Sources/Dependencies/
+Sources/NootedRed-Clean/
 Sources/GLDualQuadFix/*.o
 Sources/GLDualQuadFix/*.bin
-Sources/GLDualQuadFix/candidate-code-audit.json
-Tools/KextAddons/Reports/
+Tools/**/Reports/
 config.private.plist
 .env
 .env.*

@@ -1,1 +1,0 @@
-PASS: 786432 native machine-code comparisons; all 65536 PCI IDs, dual-source/capability combinations, normal/equal/short buffers; APU bit corrected; other IDs and opaque context preserved. No GPU commands submitted.

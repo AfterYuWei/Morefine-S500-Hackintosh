@@ -30,5 +30,21 @@
     "url": "https://github.com/trulyspinach/SMCAMDProcessor/releases/download/0.7.2f1/SMCAMDProcessor.kext.zip",
     "sha256": "2b767df8e145c60bc581322749651026f4e85008b4e3deafe4e620e6eadbfcb5",
     "upstream_digest_verified": false
+  },
+  {
+    "repository": "https://github.com/jzrodriguez98/itlwm",
+    "tag": "1.1.0",
+    "asset": "AirportItlwm-Sequoia-Release.kext.zip",
+    "url": "https://github.com/jzrodriguez98/itlwm/releases/download/1.1.0/AirportItlwm-Sequoia-Release.kext.zip",
+    "sha256": "24e005795719b9fca37e94dc7ba027a39544630ab93220ac409455034e99f0b2",
+    "note": "Used as AirportItlwm-Tahoe.kext; original bundle version 2.4.1."
+  },
+  {
+    "repository": "https://github.com/lshbluesky/IntelBluetoothFirmware",
+    "tag": "v2.5.1",
+    "url": "https://github.com/lshbluesky/IntelBluetoothFirmware/releases/download/v2.5.1/IntelBluetooth-2.5.1-RELEASE.zip",
+    "sha256": "0e58a31993657ee2227fd548dff6d0cdf38bc9e4cb1495816e148c8d6ab43e5c",
+    "upstream_digest_verified": true,
+    "signature": "release kexts unsigned; not recorded as a signature pass"
   }
 ]

@@ -1,7 +1,0 @@
-{
-  "binary_sha256": "43964c3db7a6aff5eeb0212e3c264fd81feb36035d855bc5b278b88d36d125bd",
-  "static_analysis_findings": 0,
-  "signature": "ad-hoc verified",
-  "status": "public source rebuild matches published candidate; runtime and GPU validation pending",
-  "dependencies_compared_with_existing_source_archive": 1955
-}

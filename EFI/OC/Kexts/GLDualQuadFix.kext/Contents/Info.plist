@@ -15,9 +15,9 @@
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.1</string>
+	<string>0.2.0</string>
 	<key>CFBundleVersion</key>
-	<string>0.1.1</string>
+	<string>0.2.0</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>local.xian.GLDualQuadFix</key>
@@ -32,16 +32,22 @@
 			<string>IOResources</string>
 			<key>IOResourceMatch</key>
 			<string>IOKit</string>
+			<key>XianApplicationFilter</key>
+			<string>none</string>
 			<key>XianCandidateRevision</key>
-			<integer>2</integer>
+			<integer>3</integer>
+			<key>XianMetalGlobalRevision</key>
+			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>OSBundleCompatibleVersion</key>
-	<string>0.1.1</string>
+	<string>0.2.0</string>
 	<key>OSBundleLibraries</key>
 	<dict>
 		<key>as.vit9696.Lilu</key>
 		<string>1.7.2</string>
+		<key>com.apple.iokit.IOPCIFamily</key>
+		<string>2.0.0</string>
 		<key>com.apple.kpi.bsd</key>
 		<string>12.0.0</string>
 		<key>com.apple.kpi.iokit</key>

@@ -1,31 +1,12 @@
-# 本地派生源码与维护
+# 当前源码与固定来源
 
-`Kext-Addons/` 记录新增 NVMeFix、AMDRyzenCPUPowerManagement、SMCAMDProcessor 的固定发布来源、源码链接和下载散列。这三个驱动使用上游原始二进制，没有本地修改；许可证已保留在根目录 `LICENSES/`。
+- `NootedRed-Clean-Source.zip`：当前清理版 NootedRed 核心、手动构建脚本、打包脚本、初始化审计、固定 Lilu / MacKernelSDK 依赖与原始许可证。旧 Metal 进程授权、Scratch、VCN 实验模块已从源码和编译单元中删除。
+- `GLDualQuadFix/`：实际使用的全应用 GL + Metal 0.2.0，含有效载荷、精确页面生成器、构建脚本、只读检查工具源码和 CPU 回归。
+- `ACPI/`：当前 AX200 电源适配的 DSL。
+- `Kext-Addons/`：未修改的第三方新增驱动固定下载来源。
 
-`GLDualQuadFix/` 是新增的独立 OpenGL 候选 0.1.1，包含维护源码、生成页面数据的工具、构建脚本和 CPU 检查记录。它与下述 NootedRed Metal 修改分别维护；说明见 [GLDualQuadFix/README.md](GLDualQuadFix/README.md)。
+NootedRed 直接上游是 [steve12311/NootedRed](https://github.com/steve12311/NootedRed)，固定提交 `1983f326ebedda9e5596ee6e8ba47af52420ec11`，派生自 [ChefKissInc/NootedRed](https://github.com/ChefKissInc/NootedRed)。保留正常 GPU / 固件支持、已有 compute 虚表槽位修正，以及 KernelVersion 必须先初始化的链接约束。25 个 C++ 编译单元完成构建，两个实际改动单元的静态分析无发现；已停用 VCN 的新旧引擎分配/能力函数经 CPU/UBSan 对照保持原行为。
 
-`NootedRed-Init2-Source.zip` 包含本次本地修改的完整源码、固定版本的 Lilu / MacKernelSDK 依赖、源码差异、构建说明与初始化表审计。原作者版权和许可保留于源码树中。
+解压源码 ZIP 后设置 `CLANG` 与 `SDKROOT`，运行 `build-local.py`，再运行 `package-kext.py`。打包使用随附 `bundle-info.plist`，不会写入 EFI。SDK / 编译器不分发。新核心尚待重启验证。
 
-直接上游为 [steve12311/NootedRed](https://github.com/steve12311/NootedRed)，提交 `1983f326ebedda9e5596ee6e8ba47af52420ec11`，基于 [ChefKissInc/NootedRed](https://github.com/ChefKissInc/NootedRed)。
-
-本地变更主要是：
-
-1. 在完整核验缓存、代码与页面后，为指定进程私有 Metal 页提供短时、精确进程与线程范围的授权；不猜测 proc 结构偏移。
-2. 修正手动链接的初始化顺序，先初始化 KernelVersion，再构造依赖它的硬件模块；构建结束后检查 `__mod_init_func` 首项。
-
-已验证二进制由历史 Auth1 构建修正初始化表、更新 UUID 和说明字段后重新 ad-hoc 签名得到；代码段与原 Auth1 相同。源码包中的更新构建脚本体现相同初始化约束，但没有声称新编译的文件逐字节重现该二进制。新编译或更换工具链后必须重新验证。
-
-已验证驱动 SHA-256：
-
-```text
-332f4723f8b874ecb5a9c51873de023a1657a2f69ade6686a6bc55847c922edc
-```
-
-依赖提交：
-
-- Lilu：`0515f40b7f2a096adc85e832a4c6104fbd07f936`
-- MacKernelSDK：`7af1933c27aefcbdf4809ee44478829aad30f9c1`
-
-构建说明见源码 ZIP 内 `构建说明.md`。SDK / 编译器本身不随本仓库分发。
-
-`ACPI/SSDT-AXPWR.dsl` 是本机有效 AX200 电源适配的维护源码。其他原有 AML 保留自初始 EFI，当前没有未经核实地重写它们。
+依赖提交保持为 Lilu `0515f40b7f2a096adc85e832a4c6104fbd07f936`、MacKernelSDK `7af1933c27aefcbdf4809ee44478829aad30f9c1`。

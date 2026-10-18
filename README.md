@@ -1,165 +1,71 @@
-# Morefine S500 Hackintosh
+# Morefine S500+ Hackintosh — 当前 Tahoe EFI
 
-记录 Morefine S500+（Ryzen 7 5825U）上的 OpenCore 配置、AX200 无线适配，以及 NootedRed 在 Tahoe 下的 Chrome / Electron 渲染实验和网易云 OpenGL 花屏候选修补。
+适用本机 Morefine S500+ / Ryzen 7 5825U（8C/16T）、AMD 核显 `1002:15e7`、Intel AX200，当前系统 macOS 26.7.1 / 25G241 / Darwin 25.6.0，OpenCore 1.0.8 RELEASE。
 
-本仓库基于现有 EFI 和多个社区项目整理，包含本机适配与本地实验修改。主要驱动和补丁的功劳属于各上游作者；参考与致谢见文末。
+**本次以实际 SSD 的 106 文件 EFI 为基线整体整理。** 已删除停用的旧进程 Metal/Scratch/签名授权与实验 VCN 模块，删除不再适用的旧 TSC 条目，保留已验证的全应用 GL/Metal 修补。目录与 [EFI.zip](EFI.zip) 为同一份脱敏配置；旧 EFI ZIP 与旧 Init2 源码包已从当前树移除，历史仍可在 Git 提交中查阅。
 
-> **使用前先生成自己的 SMBIOS 信息。** `EFI/OC/config.plist` 与 `已验证EFI.zip` 均已移除本机的序列号、MLB、SystemUUID 和 ROM，不能直接使用这些空值启动。实机验证使用的是脱敏前、具有有效本机身份信息的配置。
+**清理版 NootedRed 已重新编译，部署后仍需重启验证。** 此前 GLDualQuadFix 0.2.0 已确认 GL 和 Metal 均 PATCHED，用户反馈 QQ、Codex 无异常；这份反馈属于清理前核心组合。全局修补二进制本次逐字节保持不变，不能把此前反馈当成新核心已经重启通过。
 
-> **2026-10-18 驱动更新：** 新增 `NVMeFix 1.1.3`、官方 `AMDRyzenCPUPowerManagement 0.7.2` 和 `SMCAMDProcessor 1`（AMD 发布包 0.7.2f1）。同版组件已在本机 SSD 配置重启后加载，NVMe APST 与电源代理存在，AMD 监控能显示读数。CPU 驱动包含默认电源管理行为。实际节能、睡眠唤醒和长期稳定性尚未验证。见 [驱动与验证说明](docs/kext-addons.md)。
+**使用前生成自己的身份信息。** 两份公开配置均清空序列号、MLB、SystemUUID，并将 ROM 置零；需要自行填写。私人完整备份、分区标识、原始日志和截图没有上传。
 
-> **OpenGL 更新状态：** 实验性 `GLDualQuadFix 0.1.1` 面向本机 `1002:15e7`、Darwin `25.6` 的精确 Apple OpenGL 驱动。已在重启后确认 `PATCHED`；网易云原硬件加速歌单操作及持续稳定性仍待验证。`已验证EFI.zip` 保留此前不含 OpenGL 和本轮三个新增驱动的历史版本。详情见 [OpenGL 候选说明](docs/opengl-candidate.md)。
+## 当前组件
 
-## 本机配置与验证范围
-
-| 项目 | 配置 / 状态 |
+| 组件 | 当前版本 / 用途 |
 | --- | --- |
-| 机器 | Morefine S500+，5825U 版本 |
-| CPU | AMD Ryzen 7 5825U，8 核 16 线程 |
-| 核显 | AMD Radeon Vega / Renoir，PCI ID `1002:15e7` |
-| 内存 | 32 GB |
-| 核显显存 | 本机报告 2 GB，Metal 3 |
-| 无线 / 蓝牙 | Intel AX200 |
-| SMBIOS | `iMacPro1,1`，身份字段需自行生成 |
-| OpenCore | 1.0.8 |
-| Sequoia | macOS 15.8.1，原有基础功能及无线配置已实测 |
-| Tahoe | macOS 26.7.1 / `25G241` / Darwin `25.6.0`，独立测试卷实测 |
-| 图形测试 | DELL U2422HX，1920 × 1080 / 60 Hz |
+| AMDRyzenCPUPowerManagement.kext | 0.7.2 |
+| AMFIPass.kext | 1.4.1 |
+| AirportItlwm-Tahoe.kext | 2.4.1 |
+| AppleMCEReporterDisabler.kext | 1.2 |
+| BlueToolFixup.kext | 2.7.2 |
+| GLDualQuadFix.kext | 0.2.0，GL + Metal 全应用精确页面 |
+| IntelBTPatcher.kext | 2.5.1 |
+| IntelBluetoothFirmware.kext | 2.5.1 |
+| Lilu.kext | 1.7.2 |
+| LucyRTL8125Ethernet.kext | 1.2.3 |
+| NVMeFix.kext | 1.1.3 |
+| NootedRed-Tahoe.kext | 0.9.0，Clean Core 1 |
+| RealtekRTL8111.kext | 2.4.2 |
+| RestrictEvents.kext | 1.1.6 |
+| SMCAMDProcessor.kext | 1.0.1 |
+| USBToolBox.kext | 1.2.0 |
+| UTBMap.kext | 1.1 |
+| VirtualSMC.kext | 1.3.8 |
 
-验证日期：2026-10-17 与 2026-10-18。基础配置及下述 Chrome / VS Code 结果来自此前的引导介质测试；后续 OpenGL 和新增驱动结果来自本机 SSD 配置。仓库本次在既有公开 EFI 上同步三个新增驱动及加载项，其余组件保留原仓库版本，未整体替换为 SSD EFI。组件验证不能视为当前公开 EFI 整包已重新启动验证，历史应用结果也不能替代新候选测试。
+保留本机 USB 映射、三个 SSDT、当前 AMD 内核补丁、图形菜单资源及 UEFI Shell。没有删除已启用的必要驱动，也没有顺带升级其他组件。当前有效内核补丁集合保持一致，旧条目仅覆盖 Darwin 25.3 及以前。
 
-## 处理了哪些问题
+## 图形修补
 
-### 1. AMD CPU 与不同内核版本的启动适配
+- NootedRed Clean Core 1 保留 GPU / 固件基础支持、compute 提交虚表槽位修正与 KernelVersion 优先初始化；旧白名单、进程私有 COW/签名授权、Scratch 和 VCN 实验实现直接删除。
+- `GLDualQuadFix 0.2.0` 统一处理 GL 一页和 Metal 两页，按原生验证结果、文件路径、页偏移、完整 4KB 指令匹配，不按应用名称筛选。
+- 仅支持本机单 GPU `1002:15e7` 与当前精确驱动页面；macOS 更新后需要重新核验。没有启用 Scratch/VCN 参数，也没有删除已有 AMFIPass 设置。
+- 运行 [检查当前EFI.command](Tools/GLDualQuadFix/检查当前EFI.command)，核对清理版核心 UUID、全局模块、GL/Metal 页面。检查不提交 GPU 工作，报告保存在本地且被 Git 忽略。
 
-- 使用 [AMD-OSX/AMD_Vanilla](https://github.com/AMD-OSX/AMD_Vanilla) 的内核补丁体系；核心数补丁按本机 **8 个物理核心**配置。
-- Tahoe 配置包含适用于 Darwin 25 的补丁范围，以及参考 [PR #215](https://github.com/AMD-OSX/AMD_Vanilla/pull/215) 的 Darwin 25.4+ TSC 补丁调整。
-- 保留本机 CPU / EC / USB ACPI 配置与 `RestrictEvents` 兼容参数。它们不等于其他型号或其他 BIOS 可直接复用。
+详见 [图形方案](docs/graphics.md)、[当前验证摘要](docs/current-validation.json) 与 [维护源码](Sources)。网易云原硬件加速歌单和持续播放尚无本轮成功反馈，不能借 QQ/Codex 结果宣称所有应用已根治。
 
-### 2. Sequoia 下 AX200 原生 Wi-Fi 与蓝牙
+## 无线、蓝牙与电源
 
-- 使用 `AirportItlwm` 的 Sequoia 预览构建，在系统 Wi-Fi 菜单连接网络；不依赖 HeliPort。
-- 使用 `IntelBluetoothFirmware`、`IntelBTPatcher` 和 `BlueToolFixup` 配套处理蓝牙加载与初始化，已验证搜索或连接设备。
-- 保留本机的 `SSDT-AXPWR.aml`、GPP4 电源方法相关适配与 PCIe ASPM 设置；维护源码见 [Sources/ACPI](Sources/ACPI)。
-- 已验证 2.4 GHz 和另一接入点的 5 GHz / 80 MHz 连接。原接入点的部分 5 GHz / 160 MHz 组合仍有高延迟，**没有证明仅由 160 MHz 带宽导致，也没有宣称彻底修复该互操作问题**。
+AX200 当前使用 jzrodriguez98/itlwm `1.1.0` 发布包的 AirportItlwm（kext 2.4.1），蓝牙为 lshbluesky 维护分支 `2.5.1`，BlueToolFixup 2.7.2。它们是当前实际 SSD 组件，不能套用旧 README 的“仅 Sequoia/未启用 Tahoe”说明。
 
-本 EFI 的无线、蓝牙条目设置了内核版本范围。**Tahoe 下未启用这组 AX200 驱动，当前使用有线网络测试。**
+蓝牙 2.5.1 已加载，但单靠升级未消除音箱断续。用户对照显示两个无线接收器同时使用时明显卡顿，单独使用任一接收器基本顺畅；当前采用一只有线的绕过。射频/USB 调度尚未严格区分，不能宣称蓝牙驱动根治。
 
-### 3. Tahoe 下 Chrome / Electron 闪屏、卡顿、GPU Reset
+NVMeFix、AMDRyzenCPUPowerManagement、SMCAMDProcessor 已有重启加载与初步读数验证。AMD 原版组件含默认电源管理行为，不只是监控；实际节能、读数精度、睡眠唤醒和长期稳定性未完成验证。见 [附加驱动说明](docs/kext-addons.md)。
 
-原始现象是 Chrome 或 VS Code 使用 GPU 渲染后出现闪屏、严重卡顿；若未及时退出应用，最终可能只能强制重启。旧采集出现过实际 `GFX GPU Reset`，涉及 Dawn 渲染任务。
+CoreMedia `allowMetalTransferSession=false` 是当前系统卷保留的既有绕过，**不会随 EFI 自动应用**；不把它等同于关闭整个 GPU 加速。3.5mm 音频未配置，硬件视频编解码、DRM、连续互通等不在已验证范围内。
 
-本机通过的组合为：
+## 使用与检查
 
-- [steve12311/NootedRed](https://github.com/steve12311/NootedRed) `v0.9.0-pre-release.4`，上游提交 `1983f326ebedda9e5596ee6e8ba47af52420ec11`。
-- 本地 **Auth1 + Init2** 修正版：对经过完整核验的私有 Metal 代码页加入局部进程授权，并修正本地手动链接时的全局初始化顺序。
-- 启动参数 **`-NRedLegacyBlend`**。本版本不启用 `-NRedComputeScratch` 或 `-NRedVCN`。
-- Tahoe 专用 `AMFIPass 1.4.1` 与 `-amfipassbeta`；`csr-active-config` 为 `00000000`，实机 SIP 状态显示 enabled。
+1. 保留自己的完整 EFI 备份，先用可恢复的 U 盘测试。
+2. 为 `iMacPro1,1` 生成自己的 SystemSerialNumber、MLB、SystemUUID 和六字节 ROM，填写 `EFI/OC/config.plist`。不要用空身份配置直接覆盖自己的可用 EFI。
+3. 用 OpenCore 1.0.8 对应的 `ocvalidate` 校验，再将配置放到正确 EFI 分区。
+4. 正常重启后运行检查工具，确认清理版核心及 GL/Metal 修补生效，再逐个验证常用应用。
 
-局部授权仅面向经过核验的 WindowServer、Chrome Helper 与 Code Helper；本地构建的 KernelVersion 初始化必须先于依赖它的硬件模块。此前手动构建漏掉这个依赖，会选择错误的硬件字段偏移并导致启动失败。源码包包含修正后的构建顺序和链接后审计。
+公开仓库不提供自动覆盖用户磁盘的安装脚本。源码构建和本机编译验证不等于所有机器可启动。本次完整回退备份只保存在本机，公开 ZIP 是脱敏发布包。
 
-**2026-10-17 本轮验证结果：**
+## 本次清理与限制
 
-| 检查 | 结果 |
-| --- | --- |
-| Init2 驱动实际加载 | 已确认，UUID `86E597A9-1A9C-5BE4-AA4F-D11370076911` |
-| LegacyBlend / WindowServer 补丁实际应用 | 已确认 |
-| Chrome | `155.0.8059.85`，用户实测不卡顿 |
-| Chrome 渲染后端 | `GraphiteDawnMetal` / `ANGLE_METAL` |
-| 合成、栅格化、WebGL、WebGPU | Hardware accelerated |
-| Chrome GPU 进程崩溃计数 | 0 |
-| VS Code | 用户确认滚动、切换窗口、终端操作正常；该测试用户未启用禁用硬件加速的 argv 设置 |
-| 本轮采集的新 GPU Reset / WindowServer 崩溃 | 未发现 |
+25 个 C++ 单元构建、初始化表审计、改动单元静态分析、签名与配置检查通过；已停用 VCN 路径的新旧函数经 CPU/UBSan 对照一致。compute 槽位回归使用实际保留的桥接代码，未新做独立系统驱动文件虚表审计（当前系统不单独提供该 Mach-O）。全局页面回归已有常规/UBSan 记录，ASan 在本机进入 main 前发生 libpthread 初始化错误，未记为通过。
 
-本轮是约四分钟的启动与应用操作验证，不能替代长期稳定性验证。**修复结果仅在上述 Tahoe 环境中确认；Sequoia 15.8.1 的 Electron 问题没有因此被宣称修复。** 原始应用进程、UUID、设备序列号等私人诊断没有公开上传，仓库只保留不含本机身份的验证摘要。
-
-这是本地实验性派生版本，不是 NootedRed 官方正式发布。SIP 显示 enabled 也不代表签名机制完全未作例外处理；当前仍使用 AMFIPass 与局部授权例外。修改说明、固定版本源码及依赖见 [Sources](Sources)。
-
-### 4. Tahoe 首次设置 Data & Privacy 卡顿
-
-这属于单独的像素转换 / Metal compute 问题。测试卷保留了参考 [NootedRed issue #235](https://github.com/ChefKissInc/NootedRed/issues/235) 的系统偏好：
-
-```sh
-sudo defaults write /Library/Preferences/com.apple.coremedia allowMetalTransferSession -bool false
-sudo chmod 644 /Library/Preferences/com.apple.coremedia.plist
-```
-
-这是 **macOS 卷内的设置，不会随 EFI 文件自动应用**。只在遇到对应问题、确认目标为测试系统时考虑设置。本次 Chrome 报告仍显示 Metal 硬件渲染，不能将这项偏好等同于关闭整个 GPU 加速。
-
-### 5. USB 与配置整理
-
-- 使用 `USBToolBox.kext` 与本机 `UTBMap.kext`；保留现有端口映射，不在发布时重新猜测 USB 端口。
-- 清理已停用的旧 `itlwm`、临时调试驱动及过时配置条目。
-- 分别限定 Sequoia 与 Tahoe 的 NootedRed、无线和蓝牙驱动加载范围，避免跨版本误加载。
-- 使用 OpenCore 1.0.8 的 `ocvalidate`、plist 检查及文件散列核对。
-
-### 6. 网易云歌单触发 OpenGL GPU Reset：候选 0.1.1
-
-点击“我喜欢的歌单”会出现花屏或桌面卡顿，退出网易云可恢复。已有报告显示网易云 GPU Helper 在 Apple OpenGL 提交路径发生 GPU 重置；软件渲染启动后原操作正常。此前的 Metal 修补不能直接覆盖这条 OpenGL 路径。
-
-新增独立 Lilu 插件 `GLDualQuadFix.kext`，仅对本机 PCI `15e7` 的 `UpdateHwCbDualQuadMode` 设置 `DISABLE_DUAL_QUAD`，保留 GPU 加速。候选通过 `cs_validate_page` 在原生验证成功后，核对精确驱动路径、偏移与完整 4KB 原页面，再修改内存中的 142 字节函数。
-
-首版 0.1.0 重启后仍为 `NATIVE`。0.1.1 修正了插件的 IOKit 匹配阶段和页面验证入口，原渲染载荷不变。新入口 32,768 组 CPU / UBSan 检查、编译、静态分析和签名检查通过；原载荷的 786,432 组对照及 4096 字节变异拒绝检查记录随源码提供。**这些检查不等于 GPU 实测，当前尚未证实花屏根因或根治。**
-
-重启后先运行 [检查驱动修补.command](Tools/GLDualQuadFix/检查驱动修补.command)，出现 0.1.1 服务及 `PATCHED` 后，才正常打开网易云测试原歌单。完整限制与回退方法见 [候选说明](docs/opengl-candidate.md)，源码及构建说明见 [Sources/GLDualQuadFix](Sources/GLDualQuadFix)。
-
-2026-10-18 本机重启报告已确认 0.1.1 加载、机器码为 `PATCHED`。尚未收到原硬件加速歌单的成功复现反馈，不能因此宣称花屏根治。
-
-### 7. NVMe 电源管理与 AMD CPU 监控
-
-新增的三个驱动限定 Darwin 25，均保留上游二进制：NVMeFix 1.1.3 RELEASE，以及 trulyspinach 官方 0.7.2f1 发布包内的 AMDRyzenCPUPowerManagement 0.7.2、SMCAMDProcessor 1。
-
-2026-10-18 本机 SSD 重启报告确认三者已加载，AMD 核心服务和 SMC 插件服务存在；NVMe 的 `apst=Yes`，`NVMePMProxy` 节点已创建。用户截图显示 8 核 16 线程及频率、温度、功耗历史曲线。这确认初步加载与读取，不代表读数已校准或功耗已经下降。
-
-**原版 AMD 驱动会注册 PM dispatch、初始化 P-state，并写 C-state/HWCR，不是纯只读传感器。** 本机测试前已明确接受该默认行为；未加 `-amdpnopchk`、手动调频或强制 ASPM 参数。需要停用 AMD 部分时，将两个 AMD 条目一起设为 `Enabled=false` 并校验、重启，可保留 NVMeFix。
-
-使用 [检查驱动加载.command](Tools/KextAddons/检查驱动加载.command) 保存本地状态，配套应用从 [AMD 官方 0.7.2f1](https://github.com/trulyspinach/SMCAMDProcessor/releases/tag/0.7.2f1) 下载。详细用途、来源与限制见 [驱动说明](docs/kext-addons.md)，脱敏结果见 [验证摘要](docs/kext-addons-validation.json)。
-
-## 主要组件
-
-| 组件 | 当前版本 | 范围 / 用途 |
-| --- | --- | --- |
-| Lilu | 1.7.2 | 补丁框架 |
-| VirtualSMC | 1.3.8 | SMC 模拟 |
-| NVMeFix | 1.1.3 RELEASE | Darwin 25；第三方 NVMe 电源管理 |
-| AMDRyzenCPUPowerManagement | 0.7.2，官方发布 0.7.2f1 | Darwin 25；CPU 监控及默认电源管理 |
-| SMCAMDProcessor | 1，官方发布 0.7.2f1 | Darwin 25；VirtualSMC 传感器，依赖前一驱动 |
-| RestrictEvents | 1.1.6 | 兼容性处理 |
-| NootedRed | 0.8.10 | Darwin ≤ 24.99.99，Sequoia 原有核显驱动 |
-| NootedRed-Tahoe | 0.9.0，Auth1 + Init2 本地版 | Darwin 25.0.0–25.99.99 |
-| GLDualQuadFix | 0.1.1，本机实验候选 | Darwin 25.6.0–25.6.99；精确 GL 驱动及 PCI 15e7 |
-| AMFIPass | 1.4.1 | 仅 Darwin 25，签名兼容 |
-| AirportItlwm | 2.4.0 预览构建 | Darwin 24.2.0–24.99.99 |
-| IntelBluetoothFirmware / IntelBTPatcher | 2.5.0 | 仅 Darwin 24 |
-| BlueToolFixup | 2.7.2 | 仅 Darwin 24 |
-| RealtekRTL8111 | 2.4.2 | RTL8111 系列有线网卡驱动 |
-| LucyRTL8125Ethernet | 1.2.300 | RTL8125 系列有线网卡驱动 |
-| USBToolBox / UTBMap | 1.2.0 / 1.1 | 本机 USB 映射 |
-| AppleMCEReporterDisabler | 1.2 | AMD / SMBIOS 兼容 |
-
-保留驱动不等于所有对应硬件功能均经过独立验证。当前没有随意升级这些已测试组件。
-
-## 使用方法
-
-1. 确认硬件与内核版本匹配，先保留自己的完整 EFI 备份和可用 U 盘引导。
-2. 使用 [GenSMBIOS](https://github.com/corpnewt/GenSMBIOS) 为 `iMacPro1,1` 生成自己的 `SystemSerialNumber`、`MLB`、`SystemUUID`，并配置自己的 6 字节 `ROM`。不要使用其他人的身份信息。
-3. 修改 `EFI/OC/config.plist`，用 **OpenCore 1.0.8 对应的 ocvalidate** 校验。压缩包中的同名配置也是脱敏版本，不能用它覆盖已经填好的身份。
-4. 先把 `EFI` 放到测试 U 盘的正确位置，从 BIOS 的 UEFI 启动项进入。请自行核对目标设备，仓库不提供自动覆盖固态 EFI 的脚本。
-5. Tahoe 启动后确认正确驱动与补丁实际应用，再在 Chrome 的 `chrome://gpu` 核对硬件加速，测试平时会触发问题的操作。
-6. 核对新增 AMD 驱动的默认电源管理行为是否符合自己的需求；重启后运行 `Tools/KextAddons/检查驱动加载.command`，再检查监控读数和睡眠唤醒。报告含本机信息，默认仅保存在本地。
-
-需要恢复渲染修复前的行为时，可在已有有效身份信息的配置中只删除 `-NRedLegacyBlend`，保留其余已知可启动设置，再校验和重启。若整个 EFI 已损坏，应使用自己的完整备份。
-
-## 未解决或未完整验证
-
-- 长时间负载、睡眠唤醒、所有显示接口 / 分辨率及其他 Electron 应用尚未完成验证。
-- OpenGL 0.1.1 重启后已确认 `PATCHED`，原生硬件加速的网易云歌单复现和持续播放仍待验证；历史 Chrome / VS Code 通过不代表此候选已通过。
-- 新增存储与监控驱动仅完成初步加载和读数验证；尚未校准传感器、比较待机/负载功耗，或完成睡眠唤醒、长期稳定性测试。
-- Tahoe 的 AX200 Wi-Fi / 蓝牙没有在本配置中启用。
-- 原接入点的部分 5 GHz 连接高延迟仍需进一步定位。
-- 后续关机阶段存在独立 `shutdownStall` 记录，原因尚未确定，不能声称整机所有稳定性问题已解决。
-- 硬件视频编解码、DRM、音频、AirDrop、连续互通、iMessage / FaceTime 没有本仓库的完整实测结论。
-- 更新 macOS、Lilu、NootedRed 或应用后，需要重新核对；不能把单一系统版本的结果外推到其他版本或机器。
+详见 [EFI 清理说明](docs/efi-cleanup.md)。长期负载、睡眠唤醒、所有显示接口和全部应用仍待验证；不外推至 Sequoia、其他显卡或其他 macOS 构建。
 
 ## 参考与致谢
 
@@ -178,6 +84,8 @@ sudo chmod 644 /Library/Preferences/com.apple.coremedia.plist
 | [trulyspinach/SMCAMDProcessor](https://github.com/trulyspinach/SMCAMDProcessor) 及其贡献者 | AMDRyzenCPUPowerManagement、SMCAMDProcessor 与 AMD Power Gadget |
 | [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm) | Intel Wi-Fi / AirportItlwm |
 | [OpenIntelWireless/IntelBluetoothFirmware](https://github.com/OpenIntelWireless/IntelBluetoothFirmware) | Intel 蓝牙固件与补丁 |
+| [lshbluesky/IntelBluetoothFirmware](https://github.com/lshbluesky/IntelBluetoothFirmware) | 当前 2.5.1 蓝牙维护分支 |
+| [jzrodriguez98/itlwm](https://github.com/jzrodriguez98/itlwm) | 当前 Tahoe AirportItlwm 发布分支 |
 | [acidanthera/BrcmPatchRAM](https://github.com/acidanthera/BrcmPatchRAM) | BlueToolFixup |
 | [dortania/OpenCore-Legacy-Patcher](https://github.com/dortania/OpenCore-Legacy-Patcher) / dhinakg | 本次使用的 AMFIPass 1.4.1 包来源与相关签名兼容工作 |
 | [USBToolBox/kext](https://github.com/USBToolBox/kext)、[USBToolBox/tool](https://github.com/USBToolBox/tool) | USB 映射框架与工具 |

@@ -1,0 +1,75 @@
+{
+  "cache_uuid": "3137475689b434e8a34f56c5d57216a1",
+  "cache_base": 140703128616960,
+  "target_device": "1002:15e7, single GPU only",
+  "pages": [
+    {
+      "kind": "GL",
+      "file_offset": 32768,
+      "paths": [
+        "/System/Library/Extensions/AMDRadeonX5000GLDriver.bundle/Contents/MacOS/AMDRadeonX5000GLDriver"
+      ],
+      "edits": [
+        {
+          "label": "GL-existing-142-bytes",
+          "in_page": 414,
+          "original": "554889e553504889fb31c9f687ec300000047412488b83d81200008b88a0000000d1e983e1018b839813000083e0fe09c8898398130000488b8b680d0000488d510c483b93600d0000721a4889dfbe02000000e8bc730500488b8b680d00008b839813000048ba006901c0020200004889118941084883c10c48898bf830000048898b680d00004883c4085b5dc3",
+          "patched": "534889fb488b83d81200006681780ce7156a0159741631c9f683ec30000004740b8b88a0000000d1e983e1018b83981300000fbaf00009c8898398130000488b8b680d0000488d510c483b93600d000072184889df6a025ee8b3730500488b8b680d00008b839813000048ba006901c0020200004889118941084883c10c48898bf830000048898b680d00005bc3"
+        }
+      ],
+      "index": 0,
+      "original_sha256": "e5165b5b7dd641a1f3d886aec0a87864f9d3763cadd76d5528e572c0f45ed705",
+      "patched_sha256": "b31be419d02645145c3b26f16f90b168aed0436e499013163bfd92dc2f4c5a79",
+      "shared_offset": 0,
+      "changed_bytes": 133
+    },
+    {
+      "kind": "Metal",
+      "file_offset": 281505792,
+      "paths": [
+        "/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_x86_64h.03"
+      ],
+      "edits": [
+        {
+          "label": "metal-blend-gate",
+          "in_page": 1800,
+          "original": "7428",
+          "patched": "9090"
+        }
+      ],
+      "index": 1,
+      "original_sha256": "2a60e210de636c14926be7838ef5aab369b83394f4c4b698bdec18d4c8b8c996",
+      "patched_sha256": "ea575c0d66669f56efd8b1acab227a3665322056455b4d64d8eca9b39b5c9265",
+      "shared_offset": 13166407680,
+      "changed_bytes": 2
+    },
+    {
+      "kind": "Metal",
+      "file_offset": 282529792,
+      "paths": [
+        "/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_x86_64h.03"
+      ],
+      "edits": [
+        {
+          "label": "metal-init-15e7",
+          "in_page": 2600,
+          "original": "554889e553504889fb8b86a0000000c1e8050fb6c04883f00148c7c10002ffff48230f4809c14881c9fedd000048890f31c0837e78030f93c0c1e01148baffdf0900fcffffff4821ca4809c2c747148000000048b8000070ff020000004809d04889078b8ea0000000d1e983e10148c1e12248baffdf7bff32fcfffa4821c24809cac4e279180535e32400c5f813471cc7472c0000010048b800800000008000004889472448b800000000c00200054809d0488907804f08c0c7473c19000000c6475000e83a27eeff4889df4883c4085b5de9c72aeeff",
+          "patched": "554889e553564889fb8b86a0000000c1e8050fb6c03401488b0f48ba0002090030fcfffa4821d14809c148bafedd70ffc20200054809d131c0837e78030f93c0c1e0114809c18b86a0000000d1e883e00148c1e0224809c148890fc7471480000000c4e279180555e32400c5f813471cc7472c0000010048b8008000000080000048894724804f08c06a195889473cc6475000e80e0000005e4889df5b5de9fb2aeeff909090554889e553564889fbe84f27eeff5e817e0ce71500007508806303fe806308bf5b5dc39090909090909090909090909090"
+        },
+        {
+          "label": "metal-override",
+          "in_page": 2815,
+          "original": "554889e55de92227eeff",
+          "patched": "e9caffffff9090909090"
+        }
+      ],
+      "index": 2,
+      "original_sha256": "c0c63a173ab4bdd848815765eb0a551fc726d14d7e07d264f26c8bf07951013c",
+      "patched_sha256": "0d564a98719d750df56c11b15ba775a994d6eadcdac017615bf7626ff3340f51",
+      "shared_offset": 13167431680,
+      "changed_bytes": 201
+    }
+  ],
+  "source_scope": "No application process name is used.",
+  "payload": "Existing GL and 15e7 LegacyBlend payload preserved; only delivery mechanism changes."
+}

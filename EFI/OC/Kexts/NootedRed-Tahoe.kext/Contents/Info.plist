@@ -38,6 +38,8 @@
 			<string>IOResources</string>
 			<key>IOResourceMatch</key>
 			<string>IOKit</string>
+			<key>XianCleanRevision</key>
+			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>LSMinimumSystemVersion</key>
@@ -68,18 +70,18 @@
 	<key>OSBundleRequired</key>
 	<string>Safe Boot</string>
 	<key>BuildMachineOSBuild</key>
-	<string>24H32</string>
+	<string>25G241</string>
 	<key>DTCompiler</key>
 	<string>Apple clang 17.0.0 (manual build)</string>
 	<key>DTSDKName</key>
 	<string>macosx15.5</string>
-	<key>NRedLocalDiagnosticBuild</key>
-	<string>Auth1-20261017</string>
 	<key>NRedLocalBaseCommit</key>
 	<string>1983f326ebedda9e5596ee6e8ba47af52420ec11</string>
-	<key>NRedLocalSourceChanges</key>
-	<string>Scoped process authorization before verified private Metal page patches</string>
 	<key>NRedLocalBuild</key>
-	<string>Auth1-Init2-constructor-order-only</string>
+	<string>Clean-Tahoe-Core-1</string>
+	<key>NRedLocalSourceChanges</key>
+	<string>Removed retired per-process Metal/Scratch/signing authorization and disabled VCN experiments; kept baseline GPU support and compute slot correction.</string>
+	<key>XianCleanRevision</key>
+	<integer>1</integer>
 </dict>
 </plist>

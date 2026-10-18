@@ -1,0 +1,90 @@
+{
+  "status": "CLEAN_EFI_DEPLOYED_REBOOT_PENDING",
+  "date": "2026-10-18",
+  "target": {
+    "machine": "Morefine S500+ / Ryzen 7 5825U",
+    "GPU": "1002:15e7",
+    "macOS": "26.7.1 / 25G241",
+    "Darwin": "25.6.0",
+    "OpenCore": "1.0.8 RELEASE"
+  },
+  "publication": {
+    "source": "Current actual SSD EFI, not the previous partial repository combination",
+    "EFI_files": 106,
+    "identity": "Serial, MLB and SystemUUID blank; ROM zeroed. All other fields and component bytes match the deployed EFI.",
+    "private_backups_and_logs_published": false
+  },
+  "deployment": {
+    "local_readback": "106 files verified",
+    "changed_files": [
+      "OC/Kexts/NootedRed-Tahoe.kext/Contents/Info.plist",
+      "OC/Kexts/NootedRed-Tahoe.kext/Contents/MacOS/NootedRed",
+      "OC/config.plist"
+    ],
+    "other_files_unchanged": 103,
+    "boot_args_and_machine_identity_preserved_on_SSD": true,
+    "clean_core_reboot_tested": false
+  },
+  "NootedRed": {
+    "version": "0.9.0",
+    "local_revision": "Clean-Tahoe-Core-1",
+    "UUID": "B8E0B4EC-B98B-37D2-945A-63020BC41A88",
+    "signed_binary_sha256": "fc87a5fcda52f4ca2f94fcff114a6ac4d5e6653a36655183aa54d4bbc47d88c9",
+    "CXX_units": 25,
+    "deleted_retired_source_files": 15,
+    "retired_paths": [
+      "process-name scope",
+      "per-process Metal/Scratch patching",
+      "private COW/signature authorization",
+      "experimental VCN module"
+    ],
+    "retired_symbols_and_strings": "absent",
+    "normal_GPU_and_firmware_support": "preserved",
+    "constructor_first": "KernelVersion initialization"
+  },
+  "GLDualQuadFix": {
+    "version": "0.2.0",
+    "UUID": "928B989C-8066-333E-95D5-56506FCE1C21",
+    "signed_binary_sha256": "024eac9305b4f78254e55ccef38b469ada767406511947dd362d09a0eda0052d",
+    "unchanged_this_cleanup": true,
+    "coverage": "one GL page and two Metal pages, exact whole-page validation; no process-name filter",
+    "previous_runtime_check": "GL and both Metal pages PATCHED",
+    "previous_user_feedback": "QQ and Codex normal",
+    "feedback_scope": "Previous NootedRed core; not a reboot test of the newly cleaned core"
+  },
+  "configuration": {
+    "removed_inactive_Kernel_Patch": {
+      "comment": "Visual | thread_invoke, thread_dispatch | Remove non-monotonic time panic | 12.0+",
+      "MaxKernel": "25.3.99"
+    },
+    "current_Darwin_effective_patch_set": "unchanged",
+    "remaining_Kernel_Patch_rows": 15,
+    "active_kexts": 18,
+    "SSDTs": 3,
+    "UEFI_drivers": 3,
+    "other_changes": "Correct outdated comments and rename USB-test Shell label to UEFI Shell"
+  },
+  "validation": {
+    "build": "PASS, 25 C++ units",
+    "changed_unit_static_analysis": "PASS, zero findings",
+    "constructor_audit": "PASS",
+    "retired_code_audit": "PASS",
+    "disabled_VCN_function_equivalence": "PASS, three attribute branches with UBSan",
+    "compute_bridge_CPU_regression": "PASS, retained actual bridge code and failure paths",
+    "unchanged_core_objects": "22 byte-identical; plugin_start metadata build date differs",
+    "clean_core_source_archive_rebuild": "byte-identical signed binary",
+    "public_global_source_rebuild": "byte-identical signed binary",
+    "active_page_generator": "byte-identical header",
+    "install_and_rollback_rehearsal": "PASS, all 106 baseline files restored in isolated copies",
+    "local_readback": "PASS",
+    "clean_core_and_global_signature_verification": "PASS, local ad-hoc signatures",
+    "ocvalidate": "PASS, OpenCore 1.0.8",
+    "publication_privacy_and_integrity": "PASS; 106-file ZIP matches public directory, only identity fields differ from deployed EFI; private-value scan includes both archives"
+  },
+  "limits": [
+    "Clean core needs a normal reboot and application retest.",
+    "No new standalone native driver-file vtable audit; current OS stores that executable in a kernel collection.",
+    "Previous global-page normal/UBSan regressions passed; ASan failed in libpthread before main and is not counted as passed.",
+    "No claim of long-term stability, sleep/wake, video codecs, DRM or all-app coverage."
+  ]
+}
