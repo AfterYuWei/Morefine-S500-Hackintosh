@@ -1,5 +1,13 @@
-# 附加驱动
+# NVMe 与 CPU 电源管理
 
-当前实际 SSD 使用 NVMeFix 1.1.3、官方 AMDRyzenCPUPowerManagement 0.7.2 和 SMCAMDProcessor 1（0.7.2f1 发布）。此前重启已确认加载、服务与初步读数；NVMe APST 和电源代理存在。AMD 驱动会接管 PM dispatch、初始化 P-state 并写入 C-state/HWCR，默认行为已在本机测试前接受。没有加手动调频或强制 ASPM 参数。
+| 组件 | 版本 | 作用 |
+| --- | --- | --- |
+| NVMeFix | 1.1.3 | 第三方 NVMe 电源管理 |
+| AMDRyzenCPUPowerManagement | 0.7.2 | CPU 电源管理与数据采集 |
+| SMCAMDProcessor | 1.0.1 | 向 VirtualSMC 提供 CPU 传感器 |
 
-这些原始驱动本次保持不变。新清理核心组合仍需重启验证，组件加载结果不代表功耗改善、精度校准或睡眠稳定。需要停用 AMD 部分时应将两个 AMD 条目一起处理，保留 NVMeFix 可独立使用。维护来源见 Sources/Kext-Addons/upstream-assets.json。
+两个 AMD 组件来自官方 `0.7.2f1` 发布。AMDRyzenCPUPowerManagement 包含默认电源控制行为，会接管 PM dispatch、初始化 P-state 并设置 C-state/HWCR；本配置使用默认行为，未添加手动调频或强制 ASPM 参数。
+
+组件级检查已确认驱动加载、服务与初步读数，NVMe APST 和 NVMePMProxy 存在。读数精度、实际节能效果、睡眠唤醒及长期稳定性尚未完成验证。详细结果见 [附加驱动验证摘要](kext-addons-validation.json)。
+
+停用 AMD 部分时需同时处理两个 AMD 条目；NVMeFix 可独立使用。下载与固定来源见 [组件来源](../Sources/Kext-Addons/upstream-assets.json)。

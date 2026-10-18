@@ -1,12 +1,16 @@
-# 当前源码与固定来源
+# 源码与构建
 
-- `NootedRed-Clean-Source.zip`：当前清理版 NootedRed 核心、手动构建脚本、打包脚本、初始化审计、固定 Lilu / MacKernelSDK 依赖与原始许可证。旧 Metal 进程授权、Scratch、VCN 实验模块已从源码和编译单元中删除。
-- `GLDualQuadFix/`：实际使用的全应用 GL + Metal 0.2.0，含有效载荷、精确页面生成器、构建脚本、只读检查工具源码和 CPU 回归。
-- `ACPI/`：当前 AX200 电源适配的 DSL。
-- `Kext-Addons/`：未修改的第三方新增驱动固定下载来源。
+| 路径 | 内容 |
+| --- | --- |
+| `NootedRed-Clean-Source.zip` | NootedRed 本地修订、构建与打包脚本、初始化审计、固定依赖及许可证 |
+| [GLDualQuadFix](GLDualQuadFix) | OpenGL / Metal 0.2.0 的修补数据、页面生成器、构建脚本、检查工具源码与 CPU 回归 |
+| [ACPI](ACPI) | AX200 电源适配 DSL |
+| [Kext-Addons](Kext-Addons) | 第三方组件的固定发布来源 |
 
-NootedRed 直接上游是 [steve12311/NootedRed](https://github.com/steve12311/NootedRed)，固定提交 `1983f326ebedda9e5596ee6e8ba47af52420ec11`，派生自 [ChefKissInc/NootedRed](https://github.com/ChefKissInc/NootedRed)。保留正常 GPU / 固件支持、已有 compute 虚表槽位修正，以及 KernelVersion 必须先初始化的链接约束。25 个 C++ 编译单元完成构建，两个实际改动单元的静态分析无发现；已停用 VCN 的新旧引擎分配/能力函数经 CPU/UBSan 对照保持原行为。
+## NootedRed
 
-解压源码 ZIP 后设置 `CLANG` 与 `SDKROOT`，运行 `build-local.py`，再运行 `package-kext.py`。打包使用随附 `bundle-info.plist`，不会写入 EFI。SDK / 编译器不分发。新核心尚待重启验证。
+直接上游为 [steve12311/NootedRed](https://github.com/steve12311/NootedRed)，固定提交 `1983f326ebedda9e5596ee6e8ba47af52420ec11`，派生自 [ChefKissInc/NootedRed](https://github.com/ChefKissInc/NootedRed)。本地修订包含 compute 提交桥接和 KernelVersion 优先初始化约束。
 
-依赖提交保持为 Lilu `0515f40b7f2a096adc85e832a4c6104fbd07f936`、MacKernelSDK `7af1933c27aefcbdf4809ee44478829aad30f9c1`。
+解压源码 ZIP 后设置 `CLANG` 与 `SDKROOT`，运行 `build-local.py`，再运行 `package-kext.py`。打包脚本使用随附的 `bundle-info.plist`，输出构建产物；编译器及系统 SDK 需自行准备。
+
+固定依赖为 Lilu `0515f40b7f2a096adc85e832a4c6104fbd07f936` 与 MacKernelSDK `7af1933c27aefcbdf4809ee44478829aad30f9c1`。构建、签名、源码重建和运行时结果见 [验证摘要](../docs/current-validation.json)。

@@ -1,6 +1,6 @@
 {
   "date": "2026-10-18",
-  "record_scope": "Historical component loading/telemetry checks for unchanged addon bytes. Current cleaned core needs its own reboot.",
+  "record_scope": "Component-level loading and telemetry checks; current graphics runtime is recorded in current-validation.json.",
   "loaded_versions": {
     "org.acidanthera.NVMeFix": "1.1.3",
     "wtf.spinach.AMDRyzenCPUPowerManagement": "0.7.2",
