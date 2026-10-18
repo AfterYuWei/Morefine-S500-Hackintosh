@@ -47,5 +47,6 @@
     "identity_must_be_generated_before_boot": true
   },
   "record_scope": "Historical Metal / Chrome / VS Code validation before GLDualQuadFix; not a result for the current OpenGL candidate",
-  "opengl_candidate_record": "opengl-validation-summary.json"
+  "opengl_candidate_record": "opengl-validation-summary.json",
+  "addon_component_record": "kext-addons-validation.json"
 }

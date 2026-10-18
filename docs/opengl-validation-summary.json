@@ -1,7 +1,7 @@
 {
   "date": "2026-10-17",
   "version": "0.1.1",
-  "status": "offline and deployment verified; reboot PATCHED and original GPU test pending",
+  "status": "rebooted: 0.1.1 loaded, IOKit service present, GL function PATCHED; original GPU application and stability tests pending",
   "plugin_SHA256": "43964c3db7a6aff5eeb0212e3c264fd81feb36035d855bc5b278b88d36d125bd",
   "payload_SHA256": "669daa1f7b96afc89b12aa977ddc2be31962a3a47bae41dcfaa3be716bd542b4",
   "new_page_bridge_CPU_cases": 32768,
@@ -11,17 +11,20 @@
   "public_source_rebuild": "byte-identical plugin binary",
   "static_analysis_findings": 0,
   "configuration_delta": "one Kernel/Add entry only",
-  "public_EFI_file_count": 43,
   "SMBIOS_redacted": true,
   "private_machine_data_check": "passed for changed and added files",
   "historical_verified_zip": "unchanged; excludes GLDualQuadFix",
   "scope": "this publication adds GLDualQuadFix to the original repository EFI; not a wholesale SSD EFI sync",
   "next_required": [
-    "reboot and confirm 0.1.1 service and PATCHED",
     "original hardware-accelerated Netease playlist",
     "sustained playback and other app regression"
   ],
   "ocvalidate": "OpenCore 1.0.8: passed",
   "strict_signature_verification": "passed",
-  "plist_and_shell_syntax": "passed"
+  "plist_and_shell_syntax": "passed",
+  "updated_date": "2026-10-18",
+  "reboot_runtime_confirmed": true,
+  "reboot_code_result": "PATCHED",
+  "OpenGL_publication_EFI_file_count": 43,
+  "runtime_evidence": "kext-addons-validation.json"
 }

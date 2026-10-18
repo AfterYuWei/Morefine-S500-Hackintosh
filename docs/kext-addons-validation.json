@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-18",
+  "system": "macOS 26.7.1 / 25G241 / Darwin 25.6.0",
+  "CPU": "Ryzen 7 5825U, Family 19h Model 50h, 8C/16T",
+  "status": "initial reboot loading and telemetry visibility verified; stability and power savings unverified",
+  "component_validation_environment": "live SSD Tahoe EFI (106 files); other components differ from the retained public multi-OS base",
+  "public_EFI_reboot_tested_as_whole": false,
+  "loaded_versions": {
+    "org.acidanthera.NVMeFix": "1.1.3",
+    "wtf.spinach.AMDRyzenCPUPowerManagement": "0.7.2",
+    "wtf.spinach.SMCAMDProcessor": "1",
+    "local.xian.GLDualQuadFix": "0.1.1"
+  },
+  "NVMe_apst_enabled": true,
+  "NVMePMProxy_present": true,
+  "AMD_core_service": "registered, matched, active",
+  "SMCAMDProcessor_service": "present, active",
+  "VirtualSMC_sensor_keys_independently_verified": false,
+  "telemetry_screenshot_values": {
+    "physical_cores": 8,
+    "logical_cores": 16,
+    "average_frequency_GHz": 3.76,
+    "maximum_frequency_GHz": 4.4,
+    "temperature_C": 74.65,
+    "reported_power_W": 15.63,
+    "graph_history_visible": true,
+    "workload_at_capture": "unknown",
+    "sensor_accuracy_independently_calibrated": false
+  },
+  "stock_AMD_power_management_enabled": true,
+  "manual_Pstate_fan_voltage_changes": false,
+  "privilege_bypass_argument_added": false,
+  "forced_ASPM_added": false,
+  "configuration_delta": "exactly three Kernel/Add entries; previously tracked settings unchanged",
+  "public_EFI_file_count": 51,
+  "historical_verified_zip": "unchanged pre-OpenGL and pre-addons archive",
+  "not_yet_verified": [
+    "sustained stability",
+    "sleep/wake",
+    "idle and load power comparison",
+    "sensor accuracy",
+    "original hardware-accelerated Netease playlist after OpenGL fix"
+  ],
+  "private_identifiers_redacted": true,
+  "raw_diagnostics_or_desktop_screenshot_published": false
+}

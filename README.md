@@ -6,7 +6,9 @@
 
 > **使用前先生成自己的 SMBIOS 信息。** `EFI/OC/config.plist` 与 `已验证EFI.zip` 均已移除本机的序列号、MLB、SystemUUID 和 ROM，不能直接使用这些空值启动。实机验证使用的是脱敏前、具有有效本机身份信息的配置。
 
-> **OpenGL 更新状态：** `EFI/` 新增实验性 `GLDualQuadFix 0.1.1`，面向本机 `1002:15e7`、Darwin `25.6` 的精确 Apple OpenGL 驱动。已通过离线检查并部署到本机 SSD；重启后 `PATCHED`、网易云硬件加速歌单操作及持续稳定性尚未确认。`已验证EFI.zip` 保留此前不含此插件的历史版本。详情见 [OpenGL 候选说明](docs/opengl-candidate.md)。
+> **2026-10-18 驱动更新：** 新增 `NVMeFix 1.1.3`、官方 `AMDRyzenCPUPowerManagement 0.7.2` 和 `SMCAMDProcessor 1`（AMD 发布包 0.7.2f1）。同版组件已在本机 SSD 配置重启后加载，NVMe APST 与电源代理存在，AMD 监控能显示读数。CPU 驱动包含默认电源管理行为。实际节能、睡眠唤醒和长期稳定性尚未验证。见 [驱动与验证说明](docs/kext-addons.md)。
+
+> **OpenGL 更新状态：** 实验性 `GLDualQuadFix 0.1.1` 面向本机 `1002:15e7`、Darwin `25.6` 的精确 Apple OpenGL 驱动。已在重启后确认 `PATCHED`；网易云原硬件加速歌单操作及持续稳定性仍待验证。`已验证EFI.zip` 保留此前不含 OpenGL 和本轮三个新增驱动的历史版本。详情见 [OpenGL 候选说明](docs/opengl-candidate.md)。
 
 ## 本机配置与验证范围
 
@@ -24,7 +26,7 @@
 | Tahoe | macOS 26.7.1 / `25G241` / Darwin `25.6.0`，独立测试卷实测 |
 | 图形测试 | DELL U2422HX，1920 × 1080 / 60 Hz |
 
-验证日期：2026-10-17。基础配置及下述 Chrome / VS Code 结果来自此前的引导介质测试。OpenGL 0.1.1 后续已部署到本机 SSD，仓库本次仅同步这一插件、加载条目及维护资料；其余组件保留原仓库版本，不能把历史应用通过结果视为新候选通过。
+验证日期：2026-10-17 与 2026-10-18。基础配置及下述 Chrome / VS Code 结果来自此前的引导介质测试；后续 OpenGL 和新增驱动结果来自本机 SSD 配置。仓库本次在既有公开 EFI 上同步三个新增驱动及加载项，其余组件保留原仓库版本，未整体替换为 SSD EFI。组件验证不能视为当前公开 EFI 整包已重新启动验证，历史应用结果也不能替代新候选测试。
 
 ## 处理了哪些问题
 
@@ -101,12 +103,27 @@ sudo chmod 644 /Library/Preferences/com.apple.coremedia.plist
 
 重启后先运行 [检查驱动修补.command](Tools/GLDualQuadFix/检查驱动修补.command)，出现 0.1.1 服务及 `PATCHED` 后，才正常打开网易云测试原歌单。完整限制与回退方法见 [候选说明](docs/opengl-candidate.md)，源码及构建说明见 [Sources/GLDualQuadFix](Sources/GLDualQuadFix)。
 
+2026-10-18 本机重启报告已确认 0.1.1 加载、机器码为 `PATCHED`。尚未收到原硬件加速歌单的成功复现反馈，不能因此宣称花屏根治。
+
+### 7. NVMe 电源管理与 AMD CPU 监控
+
+新增的三个驱动限定 Darwin 25，均保留上游二进制：NVMeFix 1.1.3 RELEASE，以及 trulyspinach 官方 0.7.2f1 发布包内的 AMDRyzenCPUPowerManagement 0.7.2、SMCAMDProcessor 1。
+
+2026-10-18 本机 SSD 重启报告确认三者已加载，AMD 核心服务和 SMC 插件服务存在；NVMe 的 `apst=Yes`，`NVMePMProxy` 节点已创建。用户截图显示 8 核 16 线程及频率、温度、功耗历史曲线。这确认初步加载与读取，不代表读数已校准或功耗已经下降。
+
+**原版 AMD 驱动会注册 PM dispatch、初始化 P-state，并写 C-state/HWCR，不是纯只读传感器。** 本机测试前已明确接受该默认行为；未加 `-amdpnopchk`、手动调频或强制 ASPM 参数。需要停用 AMD 部分时，将两个 AMD 条目一起设为 `Enabled=false` 并校验、重启，可保留 NVMeFix。
+
+使用 [检查驱动加载.command](Tools/KextAddons/检查驱动加载.command) 保存本地状态，配套应用从 [AMD 官方 0.7.2f1](https://github.com/trulyspinach/SMCAMDProcessor/releases/tag/0.7.2f1) 下载。详细用途、来源与限制见 [驱动说明](docs/kext-addons.md)，脱敏结果见 [验证摘要](docs/kext-addons-validation.json)。
+
 ## 主要组件
 
 | 组件 | 当前版本 | 范围 / 用途 |
 | --- | --- | --- |
 | Lilu | 1.7.2 | 补丁框架 |
 | VirtualSMC | 1.3.8 | SMC 模拟 |
+| NVMeFix | 1.1.3 RELEASE | Darwin 25；第三方 NVMe 电源管理 |
+| AMDRyzenCPUPowerManagement | 0.7.2，官方发布 0.7.2f1 | Darwin 25；CPU 监控及默认电源管理 |
+| SMCAMDProcessor | 1，官方发布 0.7.2f1 | Darwin 25；VirtualSMC 传感器，依赖前一驱动 |
 | RestrictEvents | 1.1.6 | 兼容性处理 |
 | NootedRed | 0.8.10 | Darwin ≤ 24.99.99，Sequoia 原有核显驱动 |
 | NootedRed-Tahoe | 0.9.0，Auth1 + Init2 本地版 | Darwin 25.0.0–25.99.99 |
@@ -129,13 +146,15 @@ sudo chmod 644 /Library/Preferences/com.apple.coremedia.plist
 3. 修改 `EFI/OC/config.plist`，用 **OpenCore 1.0.8 对应的 ocvalidate** 校验。压缩包中的同名配置也是脱敏版本，不能用它覆盖已经填好的身份。
 4. 先把 `EFI` 放到测试 U 盘的正确位置，从 BIOS 的 UEFI 启动项进入。请自行核对目标设备，仓库不提供自动覆盖固态 EFI 的脚本。
 5. Tahoe 启动后确认正确驱动与补丁实际应用，再在 Chrome 的 `chrome://gpu` 核对硬件加速，测试平时会触发问题的操作。
+6. 核对新增 AMD 驱动的默认电源管理行为是否符合自己的需求；重启后运行 `Tools/KextAddons/检查驱动加载.command`，再检查监控读数和睡眠唤醒。报告含本机信息，默认仅保存在本地。
 
 需要恢复渲染修复前的行为时，可在已有有效身份信息的配置中只删除 `-NRedLegacyBlend`，保留其余已知可启动设置，再校验和重启。若整个 EFI 已损坏，应使用自己的完整备份。
 
 ## 未解决或未完整验证
 
 - 长时间负载、睡眠唤醒、所有显示接口 / 分辨率及其他 Electron 应用尚未完成验证。
-- OpenGL 0.1.1 尚待重启后确认 `PATCHED`、原生硬件加速的网易云歌单复现和持续播放；历史 Chrome / VS Code 通过不代表此候选已通过。
+- OpenGL 0.1.1 重启后已确认 `PATCHED`，原生硬件加速的网易云歌单复现和持续播放仍待验证；历史 Chrome / VS Code 通过不代表此候选已通过。
+- 新增存储与监控驱动仅完成初步加载和读数验证；尚未校准传感器、比较待机/负载功耗，或完成睡眠唤醒、长期稳定性测试。
 - Tahoe 的 AX200 Wi-Fi / 蓝牙没有在本配置中启用。
 - 原接入点的部分 5 GHz 连接高延迟仍需进一步定位。
 - 后续关机阶段存在独立 `shutdownStall` 记录，原因尚未确定，不能声称整机所有稳定性问题已解决。
@@ -155,6 +174,8 @@ sudo chmod 644 /Library/Preferences/com.apple.coremedia.plist
 | [steve12311/NootedRed](https://github.com/steve12311/NootedRed) | 本地 Tahoe 渲染实验的直接上游与 `pre-release.4` 基础 |
 | [acidanthera/Lilu](https://github.com/acidanthera/Lilu)、[VirtualSMC](https://github.com/acidanthera/VirtualSMC)、[RestrictEvents](https://github.com/acidanthera/RestrictEvents) | 基础补丁框架、SMC 与兼容性处理 |
 | [acidanthera/MacKernelSDK](https://github.com/acidanthera/MacKernelSDK) | 本地驱动构建所需 SDK 头文件与库 |
+| [acidanthera/NVMeFix](https://github.com/acidanthera/NVMeFix) | 第三方 NVMe 电源管理 |
+| [trulyspinach/SMCAMDProcessor](https://github.com/trulyspinach/SMCAMDProcessor) 及其贡献者 | AMDRyzenCPUPowerManagement、SMCAMDProcessor 与 AMD Power Gadget |
 | [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm) | Intel Wi-Fi / AirportItlwm |
 | [OpenIntelWireless/IntelBluetoothFirmware](https://github.com/OpenIntelWireless/IntelBluetoothFirmware) | Intel 蓝牙固件与补丁 |
 | [acidanthera/BrcmPatchRAM](https://github.com/acidanthera/BrcmPatchRAM) | BlueToolFixup |

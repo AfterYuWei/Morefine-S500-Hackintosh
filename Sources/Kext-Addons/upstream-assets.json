@@ -1,0 +1,34 @@
+[
+  {
+    "repository": "https://github.com/acidanthera/NVMeFix",
+    "tag": "1.1.3",
+    "asset": "NVMeFix-1.1.3-RELEASE.zip",
+    "url": "https://github.com/acidanthera/NVMeFix/releases/download/1.1.3/NVMeFix-1.1.3-RELEASE.zip",
+    "sha256": "e1d5657ab7ac31f69771708f7b80bf218ab9aa0b8e4c4fe6ff943983037e3dfb",
+    "upstream_digest_verified": true
+  },
+  {
+    "repository": "https://github.com/trulyspinach/SMCAMDProcessor",
+    "tag": "0.7.2f1",
+    "asset": "AMD.Power.Gadget.app.zip",
+    "url": "https://github.com/trulyspinach/SMCAMDProcessor/releases/download/0.7.2f1/AMD.Power.Gadget.app.zip",
+    "sha256": "bb7779aa295ab00c8609f438c80028c5f0ca9c63e13ab768bae21876793b0674",
+    "upstream_digest_verified": false
+  },
+  {
+    "repository": "https://github.com/trulyspinach/SMCAMDProcessor",
+    "tag": "0.7.2f1",
+    "asset": "AMDRyzenCPUPowerManagement.kext.zip",
+    "url": "https://github.com/trulyspinach/SMCAMDProcessor/releases/download/0.7.2f1/AMDRyzenCPUPowerManagement.kext.zip",
+    "sha256": "844cd318a3f137d46a10e204e1367dbc9593716120289f5261dc2d48110869b4",
+    "upstream_digest_verified": false
+  },
+  {
+    "repository": "https://github.com/trulyspinach/SMCAMDProcessor",
+    "tag": "0.7.2f1",
+    "asset": "SMCAMDProcessor.kext.zip",
+    "url": "https://github.com/trulyspinach/SMCAMDProcessor/releases/download/0.7.2f1/SMCAMDProcessor.kext.zip",
+    "sha256": "2b767df8e145c60bc581322749651026f4e85008b4e3deafe4e620e6eadbfcb5",
+    "upstream_digest_verified": false
+  }
+]

@@ -13,6 +13,7 @@ Sources/Dependencies/
 Sources/GLDualQuadFix/*.o
 Sources/GLDualQuadFix/*.bin
 Sources/GLDualQuadFix/candidate-code-audit.json
+Tools/KextAddons/Reports/
 config.private.plist
 .env
 .env.*

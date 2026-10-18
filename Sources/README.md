@@ -1,5 +1,7 @@
 # 本地派生源码与维护
 
+`Kext-Addons/` 记录新增 NVMeFix、AMDRyzenCPUPowerManagement、SMCAMDProcessor 的固定发布来源、源码链接和下载散列。这三个驱动使用上游原始二进制，没有本地修改；许可证已保留在根目录 `LICENSES/`。
+
 `GLDualQuadFix/` 是新增的独立 OpenGL 候选 0.1.1，包含维护源码、生成页面数据的工具、构建脚本和 CPU 检查记录。它与下述 NootedRed Metal 修改分别维护；说明见 [GLDualQuadFix/README.md](GLDualQuadFix/README.md)。
 
 `NootedRed-Init2-Source.zip` 包含本次本地修改的完整源码、固定版本的 Lilu / MacKernelSDK 依赖、源码差异、构建说明与初始化表审计。原作者版权和许可保留于源码树中。
